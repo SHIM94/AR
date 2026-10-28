@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>비트코인 사이클 지도</title>
+<style>
+:root {
+  color-scheme: light;
+  --surface-0: #f4f3f0;
+  --surface-1: #fcfcfb;
+  --grid: #e4e2dc;
+  --text-primary: #0b0b0b;
+  --text-secondary: #52514e;
+  --text-muted: #7a7974;
+  --series-1: #2a78d6;
+  --muted-bar: #c9c7c0;
+  --risk: #eb6834;
+  --target: #1baf7a;
+  --halving: #6250d6;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --surface-0: #111110;
+    --surface-1: #1a1a19;
+    --grid: #2f2f2d;
+    --text-primary: #f0efec;
+    --text-secondary: #c3c2b7;
+    --text-muted: #8f8e88;
+    --series-1: #3987e5;
+    --muted-bar: #4a4945;
+    --risk: #d95926;
+    --target: #199e70;
+    --halving: #9085e9;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --surface-0: #111110;
+  --surface-1: #1a1a19;
+  --grid: #2f2f2d;
+  --text-primary: #f0efec;
+  --text-secondary: #c3c2b7;
+  --text-muted: #8f8e88;
+  --series-1: #3987e5;
+  --muted-bar: #4a4945;
+  --risk: #d95926;
+  --target: #199e70;
+  --halving: #9085e9;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--surface-0); color: var(--text-primary);
+  font: 15px/1.55 -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", "Segoe UI", sans-serif;
+}
+main { max-width: 980px; margin: 0 auto; padding: 24px 16px 48px; }
+h1 { font-size: 24px; margin: 0 0 4px; }
+.sub { color: var(--text-secondary); margin: 0 0 20px; }
+.card { background: var(--surface-1); border-radius: 12px; padding: 18px 18px 12px; margin-bottom: 18px; }
+.card h2 { font-size: 17px; margin: 0 0 2px; }
+.card .note { color: var(--text-muted); font-size: 13px; margin: 0 0 10px; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-bottom: 18px; }
+.tile { background: var(--surface-1); border-radius: 12px; padding: 14px 16px; }
+.tile .k { color: var(--text-secondary); font-size: 13px; }
+.tile .v { font-size: 22px; font-weight: 650; margin-top: 2px; }
+.tile .d { color: var(--text-muted); font-size: 12.5px; }
+svg { display: block; width: 100%; height: auto; overflow: visible; }
+svg text { fill: var(--text-secondary); font-size: 12px; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--text-secondary); margin: 8px 0 4px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 18px; height: 10px; border-radius: 2px; display: inline-block; }
+.sw.line { height: 2px; border-radius: 1px; }
+.sw.dash { height: 0; border-top: 2px dashed var(--text-secondary); background: none !important; }
+table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+th, td { text-align: right; padding: 7px 8px; border-bottom: 1px solid var(--grid); white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+th { color: var(--text-secondary); font-weight: 600; }
+tr.cur td { font-weight: 650; }
+.scroll { overflow-x: auto; }
+.tip {
+  position: fixed; pointer-events: none; background: var(--text-primary); color: var(--surface-1);
+  padding: 7px 10px; border-radius: 8px; font-size: 12.5px; line-height: 1.4; opacity: 0; transition: opacity .1s;
+  max-width: 260px; z-index: 10;
+}
+.scen { display: grid; gap: 10px; }
+.scen div { border-left: 3px solid var(--grid); padding: 2px 0 2px 12px; }
+.scen b { display: block; }
+.scen small { color: var(--text-muted); }
+footer { color: var(--text-muted); font-size: 12.5px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>비트코인 사이클 지도</h1>
+  <p class="sub">과거 4번의 사이클 고점·저점으로 본 이번 바닥과 다음 고점 위치 · 2026-10-28 기준</p>
+
+  <div class="tiles">
+    <div class="tile"><div class="k">현재가</div><div class="v">≈ $80.5K</div><div class="d">고점 대비 −36%</div></div>
+    <div class="tile"><div class="k">이번 사이클 고점</div><div class="v">$126.2K</div><div class="d">2025-10-06</div></div>
+    <div class="tile"><div class="k">2026 저점 (바닥 후보)</div><div class="v">≈ $57.7K</div><div class="d">2026-06-30 · 고점 대비 −54%</div></div>
+    <div class="tile"><div class="k">다음 반감기 (추정)</div><div class="v">2028년 4월</div><div class="d">과거 패턴상 고점은 반감기 후 12~18개월</div></div>
+  </div>
+
+  <div class="card">
+    <h2>사이클 고점·저점 타임라인 (로그 스케일)</h2>
+    <p class="note">주요 고점·저점만 이은 개략도이고 일별 가격이 아닙니다. 점선과 음영은 시나리오일 뿐 예측이 아닙니다. 점에 마우스를 올리면 자세히 볼 수 있습니다.</p>
+    <div class="legend">
+      <span><i class="sw line" style="background:var(--series-1)"></i>실제 고점·저점</span>
+      <span><i class="sw dash"></i>기본 시나리오 경로</span>
+      <span><i class="sw" style="background:var(--risk);opacity:.28"></i>추가 하락 위험 구간</span>
+      <span><i class="sw" style="background:var(--target);opacity:.28"></i>다음 고점 예상 구간</span>
+      <span><i class="sw line" style="background:var(--halving)"></i>반감기</span>
+    </div>
+    <svg id="timeline" viewBox="0 0 940 440" role="img" aria-label="비트코인 사이클 고점과 저점 로그 차트"></svg>
+  </div>
+
+  <div class="card">
+    <h2>확대: 2025~2030 이번 사이클</h2>
+    <p class="note">같은 데이터를 확대한 차트입니다. 바닥 시나리오는 아래 표의 A·B·C와 같습니다.</p>
+    <svg id="zoom" viewBox="0 0 940 380" role="img" aria-label="2025년부터 2030년까지 확대 차트"></svg>
+  </div>
+
+  <div class="card">
+    <h2>고점 대비 하락폭: 사이클마다 얕아짐</h2>
+    <p class="note">고점에서 저점까지의 최대 하락률. 이번 사이클은 6월 저점을 바닥으로 가정한 값입니다.</p>
+    <svg id="dd" viewBox="0 0 940 210" role="img" aria-label="사이클별 최대 하락률 막대 차트"></svg>
+  </div>
+
+  <div class="card">
+    <h2>사이클 수치</h2>
+    <div class="scroll">
+    <table>
+      <thead><tr><th>사이클</th><th>고점</th><th>저점</th><th>하락률</th><th>고점→저점</th><th>저점→다음 고점</th><th>상승 배수</th></tr></thead>
+      <tbody>
+        <tr><td>1 (2013)</td><td>$1,163 · 13-11-30</td><td>$152 · 15-01-14</td><td>−87%</td><td>410일</td><td>1,068일</td><td>130배</td></tr>
+        <tr><td>2 (2017)</td><td>$19,783 · 17-12-17</td><td>$3,122 · 18-12-15</td><td>−84%</td><td>363일</td><td>1,061일</td><td>22배</td></tr>
+        <tr><td>3 (2021)</td><td>$69,000 · 21-11-10</td><td>$15,476 · 22-11-21</td><td>−78%</td><td>376일</td><td>1,050일</td><td>8.2배</td></tr>
+        <tr class="cur"><td>4 (2025)</td><td>$126,200 · 25-10-06</td><td>≈$57.7K · 26-06-30?</td><td>−54%?</td><td>267일?</td><td>→ 2029년 중반?</td><td>≈ 3배?</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>바닥 시나리오 (제 판단, 확률은 주관적)</h2>
+    <div class="scen">
+      <div style="border-color:var(--series-1)"><b>A · 6월 $58K가 바닥 (약 50%)</b><small>그레이스케일, Galaxy(10월 입장 변경), Checkonchain 모두 이 쪽. 하락폭이 점점 얕아지는 패턴(−87→−84→−78→−54%)과도 맞습니다. 다음 고점은 2029년 중반~가을, 약 $150~230K.</small></div>
+      <div style="border-color:var(--risk)"><b>B · 4년 주기 시점에 다시 시험: 2026년 10~12월, $50~55K (약 35%)</b><small>과거 고점→저점 363~410일 패턴이면 바닥 시점은 2026년 10월~11월 하순. 실현가격 $53.6K 부근을 다시 시험하는 경우입니다.</small></div>
+      <div style="border-color:var(--risk)"><b>C · 투매: $40~46K (약 15%)</b><small>Galaxy의 6월 기본 시나리오. 매크로 충격(금리 인상, AI·증시 급락)이 함께 와야 가능합니다.</small></div>
+    </div>
+  </div>
+
+  <footer>데이터: 과거 고점·저점은 공개 시세의 장중 기준 근사치입니다. 2026년 수치는 그레이스케일·Galaxy·CoinCodex 등의 보도를 바탕으로 했습니다. 투자 권유가 아닌 분석입니다.</footer>
+</main>
+<div class="tip" id="tip"></div>
+
+<script>
+const pivots = [
+  { d: "2012-11-28", type: "halving" },
+  { d: "2013-11-30", p: 1163, t: "고점", c: 1 },
+  { d: "2015-01-14", p: 152, t: "저점", c: 1 },
+  { d: "2016-07-09", type: "halving" },
+  { d: "2017-12-17", p: 19783, t: "고점", c: 2 },
+  { d: "2018-12-15", p: 3122, t: "저점", c: 2 },
+  { d: "2020-05-11", type: "halving" },
+  { d: "2021-11-10", p: 69000, t: "고점", c: 3 },
+  { d: "2022-11-21", p: 15476, t: "저점", c: 3 },
+  { d: "2024-04-20", type: "halving" },
+  { d: "2025-10-06", p: 126200, t: "고점", c: 4 },
+  { d: "2026-02-06", p: 60000, t: "2월 투매", c: 4 },
+  { d: "2026-06-30", p: 57700, t: "저점 후보", c: 4 },
+  { d: "2026-10-28", p: 80500, t: "현재", c: 4 },
+  { d: "2028-04-15", type: "halving", est: true },
+];
+const pts = pivots.filter(x => x.p);
+const halvings = pivots.filter(x => x.type === "halving");
+
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const ts = s => new Date(s + "T00:00:00Z").getTime();
+const fmt = v => v >= 1000 ? "$" + (v / 1000).toLocaleString("en-US", { maximumFractionDigits: 1 }) + "K" : "$" + v;
+const NS = "http://www.w3.org/2000/svg";
+const el = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent && parent.appendChild(e); return e; };
+const tip = document.getElementById("tip");
+function showTip(ev, html) { tip.innerHTML = html; tip.style.opacity = 1; moveTip(ev); }
+function moveTip(ev) {
+  const w = tip.offsetWidth, x = ev.clientX + 14 + w > innerWidth ? ev.clientX - w - 14 : ev.clientX + 14;
+  tip.style.left = x + "px"; tip.style.top = (ev.clientY + 14) + "px";
+}
+const hideTip = () => tip.style.opacity = 0;
+
+function timeline(o) {
+  const svg = document.getElementById(o.id);
+  const W = 940, H = o.H, m = { l: 58, r: 16, t: 14, b: 30 };
+  const x0 = ts(o.x0), x1 = ts(o.x1);
+  const y0 = Math.log10(o.y0), y1 = Math.log10(o.y1);
+  const X = d => m.l + (ts(d) - x0) / (x1 - x0) * (W - m.l - m.r);
+  const Y = p => m.t + (1 - (Math.log10(p) - y0) / (y1 - y0)) * (H - m.t - m.b);
+
+  // grid
+  o.ticks.forEach(v => {
+    el("line", { x1: m.l, x2: W - m.r, y1: Y(v), y2: Y(v), stroke: css("--grid"), "stroke-width": 1 }, svg);
+    el("text", { x: m.l - 8, y: Y(v) + 4, "text-anchor": "end" }, svg).textContent = fmt(v);
+  });
+  for (let yr = o.yr0; yr <= 2030; yr++) {
+    if (o.oddOnly && yr % 2 === 0) continue;
+    el("text", { x: X(yr + "-01-01"), y: H - 8, "text-anchor": "middle" }, svg).textContent = yr;
+  }
+
+  // halvings
+  halvings.filter(h => ts(h.d) >= x0).forEach(h => {
+    el("line", { x1: X(h.d), x2: X(h.d), y1: m.t, y2: H - m.b, stroke: css("--halving"), "stroke-width": 1, opacity: h.est ? .45 : .7 }, svg);
+    el("text", { x: X(h.d) + 4, y: m.t + 12, style: "font-size:11px" }, svg).textContent = h.est ? "반감기(추정)" : "반감기";
+  });
+
+  // scenario zones
+  const zone = (d0, d1, p0, p1, color, label, tipHtml) => {
+    const r = el("rect", { x: X(d0), y: Y(p1), width: X(d1) - X(d0), height: Y(p0) - Y(p1), fill: color, opacity: .2, rx: 4 }, svg);
+    if (label && o.zoneLabels) el("text", { x: X(d1) - 6, y: Y(p0) + 15, "text-anchor": "end", style: "font-size:11.5px" }, svg).textContent = label;
+    r.addEventListener("mousemove", e => showTip(e, tipHtml));
+    r.addEventListener("mouseleave", hideTip);
+  };
+  zone("2026-10-01", "2027-03-31", 40000, 55000, css("--risk"), "추가 하락 위험 $40~55K",
+    "<b>시나리오 B·C</b><br>B: 4년 주기 시점 재시험, 10~12월 $50~55K<br>C: 투매 $40~46K (Galaxy 6월 전망)");
+  zone("2029-04-01", "2029-12-31", 150000, 230000, css("--target"), "다음 고점 $150~230K?",
+    "<b>다음 고점 예상 구간</b><br>저점 후 약 1,050~1,068일 / 반감기 후 12~18개월<br>상승 배수가 줄어드는 패턴: 130배→22배→8.2배→약 3배?");
+
+  // projected path
+  const proj = [["2026-10-28", 80500], ["2027-03-01", 68000], ["2027-10-01", 85000], ["2028-04-15", 105000], ["2029-07-01", 180000]];
+  el("polyline", { points: proj.map(([d, p]) => X(d) + "," + Y(p)).join(" "), fill: "none", stroke: css("--text-secondary"), "stroke-width": 2, "stroke-dasharray": "5 5", "stroke-linejoin": "round", "stroke-linecap": "round" }, svg);
+
+  // history line
+  const shown = pts.filter(q => ts(q.d) >= x0);
+  el("polyline", { points: shown.map(q => X(q.d) + "," + Y(q.p)).join(" "), fill: "none", stroke: css("--series-1"), "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round" }, svg);
+
+  // points + labels
+  shown.forEach(q => {
+    const cx = X(q.d), cy = Y(q.p);
+    el("circle", { cx, cy, r: 5, fill: css("--series-1"), stroke: css("--surface-1"), "stroke-width": 2 }, svg);
+    const label = o.allLabels || (q.t === "고점" || q.t === "저점");
+    if (label) {
+      const up = q.t === "고점" || q.t === "현재";
+      const feb = q.t === "2월 투매";
+      const t = el("text", { x: cx + (q.t === "현재" ? 8 : feb ? -10 : 0), y: feb ? cy + 4 : up ? cy - 12 : cy + 20, "text-anchor": q.t === "현재" ? "start" : feb ? "end" : "middle", style: "fill:var(--text-primary);font-size:12px;font-weight:600" }, svg);
+      t.textContent = (q.t === "현재" ? "현재 " : q.t === "저점 후보" ? "6월 저점 " : q.t === "2월 투매" ? "2월 " : "") + fmt(q.p);
+    }
+    const hit = el("circle", { cx, cy, r: 14, fill: "transparent", style: "cursor:pointer" }, svg);
+    hit.addEventListener("mousemove", e => showTip(e, `<b>${q.t}</b> · 사이클 ${q.c}<br>${q.d}<br>${fmt(q.p)}`));
+    hit.addEventListener("mouseleave", hideTip);
+  });
+}
+
+function drawdown() {
+  const svg = document.getElementById("dd");
+  const W = 940, m = { l: 150, r: 70, t: 6 };
+  const rows = [
+    { k: "1 (2013→2015)", v: 87, days: 410 },
+    { k: "2 (2017→2018)", v: 84, days: 363 },
+    { k: "3 (2021→2022)", v: 78, days: 376 },
+    { k: "4 (2025→2026)", v: 54, days: 267, cur: true },
+  ];
+  const band = 48, bar = 22;
+  const Xs = v => (W - m.l - m.r) * v / 100;
+  [0, 25, 50, 75, 100].forEach(v => {
+    el("line", { x1: m.l + Xs(v), x2: m.l + Xs(v), y1: m.t, y2: m.t + band * rows.length, stroke: css("--grid"), "stroke-width": 1 }, svg);
+    el("text", { x: m.l + Xs(v), y: m.t + band * rows.length + 16, "text-anchor": "middle" }, svg).textContent = "−" + v + "%";
+  });
+  rows.forEach((r, i) => {
+    const y = m.t + i * band + (band - bar) / 2, w = Xs(r.v);
+    el("text", { x: m.l - 10, y: y + bar / 2 + 4, "text-anchor": "end", style: r.cur ? "fill:var(--text-primary);font-weight:650" : "" }, svg).textContent = "사이클 " + r.k;
+    const path = `M${m.l},${y} H${m.l + w - 4} Q${m.l + w},${y} ${m.l + w},${y + 4} V${y + bar - 4} Q${m.l + w},${y + bar} ${m.l + w - 4},${y + bar} H${m.l} Z`;
+    const p = el("path", { d: path, fill: r.cur ? css("--series-1") : css("--muted-bar") }, svg);
+    el("text", { x: m.l + w + 8, y: y + bar / 2 + 4, style: "fill:var(--text-primary);font-weight:600" }, svg).textContent = "−" + r.v + "%" + (r.cur ? "?" : "");
+    const hit = el("rect", { x: m.l, y: y - 8, width: W - m.l - m.r, height: bar + 16, fill: "transparent" }, svg);
+    hit.addEventListener("mousemove", e => showTip(e, `<b>사이클 ${r.k}</b><br>최대 하락 −${r.v}%${r.cur ? " (6월 저점 가정)" : ""}<br>고점→저점 ${r.days}일`));
+    hit.addEventListener("mouseleave", hideTip);
+  });
+}
+
+function render() {
+  ["timeline", "zoom", "dd"].forEach(id => document.getElementById(id).innerHTML = "");
+  timeline({ id: "timeline", H: 440, x0: "2012-06-01", x1: "2030-06-01", y0: 100, y1: 400000, ticks: [100, 1000, 10000, 100000], yr0: 2013, oddOnly: true });
+  timeline({ id: "zoom", H: 380, x0: "2025-01-01", x1: "2030-03-01", y0: 30000, y1: 300000, ticks: [30000, 50000, 100000, 200000], yr0: 2025, zoneLabels: true, allLabels: true });
+  drawdown();
+}
+render();
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", render);
+new MutationObserver(render).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+</script>
+</body>
+</html>
