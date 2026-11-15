@@ -213,6 +213,59 @@ button.primary:disabled {
   font-size: 14px;
 }
 
+.quota {
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 12px;
+}
+
+.quota b {
+  color: var(--ok);
+}
+
+.upsell {
+  background: linear-gradient(135deg, #1e2140, #2a1c45);
+  border: 1px solid var(--accent);
+  border-radius: 14px;
+  padding: 18px;
+  margin-bottom: 18px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text);
+}
+
+.series-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.tab {
+  background: var(--card2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 8px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.tab.on {
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  color: white;
+  border-color: transparent;
+}
+
 .foot {
   color: var(--muted);
   font-size: 12px;
